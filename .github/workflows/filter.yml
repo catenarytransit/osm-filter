@@ -20,8 +20,10 @@ jobs:
       - name: download filter for all
         run: wget https://github.com/catenarytransit/pfaedled-gtfs-actions/blob/main/pfaedle-filter-all.txt
 
-      - name: Download OSM files
-        run: wget https://download.geofabrik.de/europe/germany-latest.osm.pbf
+      - name: Download OSM file Deutschland
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/europe/germany-latest.osm.pbf
 
       - name: Filter Deutschland
         run: osmium tags-filter -o pfaedle-filtered-germany-latest.osm.pbf --expressions=pfaedle-filter-all.txt germany-latest.osm.pbf
