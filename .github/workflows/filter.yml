@@ -30,6 +30,9 @@ jobs:
       - name: Filter Deutschland
         run: osmium tags-filter -o pfaedle-filtered-germany-latest.osm.pbf --expressions=pfaedle-filter-all.txt germany-latest.osm.pbf
 
+      - name: Delete old deutschland file
+        run: rm germany-latest.osm.pbf
+
       - name: Upload filtered file
         env:
           GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
@@ -42,3 +45,6 @@ jobs:
           gh release upload latest "$ASSET_PATH" --clobber
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: Delete old deutschland files
+        run: rm pfaedle-filtered-germany-latest.osm.pbf
