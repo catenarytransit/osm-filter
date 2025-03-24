@@ -1,0 +1,13 @@
+name: Schedule
+
+on:
+  schedule:
+    - cron: '1 1 * * *'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  call-update:
+    uses: ./.github/workflows/filter.yml
