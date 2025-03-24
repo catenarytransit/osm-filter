@@ -18,8 +18,10 @@ jobs:
         run: sudo apt install osmium-tool osmctools
 
       - name: download filter for all
-        run: wget https://github.com/catenarytransit/pfaedled-gtfs-actions/blob/main/pfaedle-filter-all.txt
-
+        uses: wei/wget@v1
+        with:
+          args: https://raw.githubusercontent.com/catenarytransit/pfaedled-gtfs-actions/refs/heads/main/pfaedle-filter-all.txt
+        
       - name: Download OSM file Deutschland
         uses: wei/wget@v1
         with:
