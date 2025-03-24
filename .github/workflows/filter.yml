@@ -19,3 +19,12 @@ jobs:
 
       - name: Install OSM tools
         run: sudo apt install osmium-tool osmctools
+
+      - name: download filter for all
+        run: wget https://github.com/catenarytransit/pfaedled-gtfs-actions/blob/main/pfaedle-filter-all.txt
+
+      - name: Download OSM files
+        run: wget https://download.geofabrik.de/europe/germany-latest.osm.pbf
+
+      - name: Filter Deutschland
+        run: osmium tags-filter -o pfaedle-filtered-germany-latest.osm.pbf --expressions=pfaedle-filter-all.txt germany-latest.osm.pbf
