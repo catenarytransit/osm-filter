@@ -14,9 +14,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Download unzip and zip
-        run: sudo apt install unzip zip
-
       - name: Install OSM tools
         run: sudo apt install osmium-tool osmctools
 
@@ -28,3 +25,16 @@ jobs:
 
       - name: Filter Deutschland
         run: osmium tags-filter -o pfaedle-filtered-germany-latest.osm.pbf --expressions=pfaedle-filter-all.txt germany-latest.osm.pbf
+
+      - name: Upload filtered file
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-germany-latest.osm.pbf 
+          ASSET_NAME: pfaedle-filtered-germany-latest.osm.pbf 
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
