@@ -39,16 +39,13 @@ jobs:
       - name: Filter Deutschland
         run: osmium tags-filter -o pfaedle-filtered-germany-latest.osm.pbf --expressions=pfaedle-filter-all.txt germany-latest.osm.pbf
 
+      - name: Delete old deutschland file
+        run: rm germany-latest.osm.pbf
+        
       - name: Filter deutschland road names out
         run: |
           ./target/release/osm-filter  pfaedle-filtered-germany-latest.osm.pbf  pfaedle-filtered-germany-latest-temp.osm.pbf
           mv pfaedle-filtered-germany-latest-temp.osm.pbf  pfaedle-filtered-germany-latest.osm.pbf
-
-      - name: Delete old deutschland file
-        run: rm germany-latest.osm.pbf
-
-      - name: Filter again
-        run: cargo
 
       - name: Upload filtered file
         env:
