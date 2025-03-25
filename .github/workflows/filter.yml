@@ -44,8 +44,8 @@ jobs:
           ./target/release/osm-filter  pfaedle-filtered-germany-latest.osm.pbf  pfaedle-filtered-germany-latest-temp.osm.pbf
           mv pfaedle-filtered-germany-latest-temp.osm.pbf  pfaedle-filtered-germany-latest.osm.pbf
 
-      - name: Upload filtered file
-        env:
+      - name: Upload filtered file Deutschland
+        env: 
           GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           ASSET_PATH: pfaedle-filtered-germany-latest.osm.pbf 
@@ -59,3 +59,24 @@ jobs:
 
       - name: Delete old deutschland files
         run: rm pfaedle-filtered-germany-latest.osm.pbf
+
+      - name: Download OSM file Sweden
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/europe/sweden-latest.osm.pbf
+
+      - name: Filter Sweden
+        run:  osmium tags-filter -o pfaedle-filtered-sweden-latest.osm.pbf --expressions=pfaedle-filter-all.txt sweden-latest.osm.pbf
+
+      - name: Upload filtered file Sweden
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-sweden-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-sweden-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
