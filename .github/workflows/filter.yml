@@ -18,10 +18,7 @@ jobs:
         run: sudo apt install osmium-tool osmctools
 
       - name: Install rust
-        uses: actions-rs/toolchain@v2
-        with:
-            toolchain: stable
-            override: true
+        run: rustup toolchain install stable
 
       - name: compile
         run: cargo build --release
