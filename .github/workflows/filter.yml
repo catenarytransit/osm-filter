@@ -17,6 +17,15 @@ jobs:
       - name: Install OSM tools
         run: sudo apt install osmium-tool osmctools
 
+      - name: Install rust
+      - uses: actions-rs/toolchain@v1
+        with:
+            toolchain: stable
+            override: true
+
+      - name: compile
+        run: cargo build --release
+
       - name: download filter for all
         uses: wei/wget@v1
         with:
@@ -32,6 +41,9 @@ jobs:
 
       - name: Delete old deutschland file
         run: rm germany-latest.osm.pbf
+
+      - name: Filter again
+        run: cargo
 
       - name: Upload filtered file
         env:
