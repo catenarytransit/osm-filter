@@ -80,3 +80,22 @@ jobs:
           gh release upload latest "$ASSET_PATH" --clobber
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: Download UK & Ireland
+        run: wget https://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf
+
+      - name: Filter Ireland for Rail CRS
+        run: osmium tags-filter -o crs-networkrail.osm.pbf --expressions=crsfilter.txt britain-and-ireland-latest.osm.pbf
+
+      - name: Upload filtered file Rail CRS
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: crs-networkrail.osm.pbf
+          ASSET_NAME: crs-networkrail.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
