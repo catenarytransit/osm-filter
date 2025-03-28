@@ -81,8 +81,13 @@ jobs:
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
 
-      - name: Download UK & Ireland
-        run: wget https://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf
+      - name: Delete old sweden file
+        run: rm sweden-latest.osm.pbf
+
+      - name: download file for British Isles
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf
 
       - name: Filter Ireland for Rail CRS
         run: osmium tags-filter -o crs-networkrail.osm.pbf --expressions=crsfilter.txt britain-and-ireland-latest.osm.pbf
