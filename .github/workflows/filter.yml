@@ -104,3 +104,24 @@ jobs:
           gh release upload latest "$ASSET_PATH" --clobber
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: "Download Alpes-Cote-d'Azur"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/europe/france/provence-alpes-cote-d-azur-latest.osm.pbf
+
+      - name: "Filter Alpes-Cote-d'Azur"
+        run: osmium tags-filter -o pfaedle-filtered-provence-alpes-cote-d-azur-latest.osm.pbf --expressions=pfaedle-filter-all.txt provence-alpes-cote-d-azur-latest.osm.pbf
+
+      - name: "Upload Alpes-Cote-d'Azur"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-provence-alpes-cote-d-azur-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-provence-alpes-cote-d-azur-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
