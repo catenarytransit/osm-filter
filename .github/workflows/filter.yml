@@ -89,7 +89,7 @@ jobs:
         with:
           args: https://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf
 
-      - name: Filter Ireland for Rail CRS
+      - name: Filter UK for Rail CRS
         run: osmium tags-filter -o crs-networkrail.osm.pbf --expressions=crsfilter.txt britain-and-ireland-latest.osm.pbf
 
       - name: Upload filtered file Rail CRS
@@ -119,6 +119,27 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ASSET_PATH: pfaedle-filtered-provence-alpes-cote-d-azur-latest.osm.pbf
           ASSET_NAME: pfaedle-filtered-provence-alpes-cote-d-azur-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: "Download Great Britain"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/europe/great-britain-latest.osm.pbf
+
+      - name: Filter Great Britain for Pfaedle
+        run: osmium tags-filter -o pfaedle-filtered-great-britain-latest.osm.pbf --expressions=pfaedle-filter-all.txt great-britain-latest.osm.pbf
+
+      - name: "Upload GB filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-great-britain-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-great-britain-latest.osm.pbf
           RELEASE_TAG: latest
         run: |
           echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
