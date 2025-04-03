@@ -39,10 +39,10 @@ jobs:
       - name: Delete old deutschland file
         run: rm germany-latest.osm.pbf
         
-      - name: Filter deutschland road names out
-        run: |
-          ./target/release/osm-filter  pfaedle-filtered-germany-latest.osm.pbf  pfaedle-filtered-germany-latest-temp.osm.pbf
-          mv pfaedle-filtered-germany-latest-temp.osm.pbf  pfaedle-filtered-germany-latest.osm.pbf
+     # - name: Filter deutschland road names out
+     #   run: |
+     #     ./target/release/osm-filter  pfaedle-filtered-germany-latest.osm.pbf  pfaedle-filtered-germany-latest-temp.osm.pbf
+    #    mv pfaedle-filtered-germany-latest-temp.osm.pbf  pfaedle-filtered-germany-latest.osm.pbf
 
       - name: Upload filtered file Deutschland
         env: 
