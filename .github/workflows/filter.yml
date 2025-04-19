@@ -146,3 +146,25 @@ jobs:
           gh release upload latest "$ASSET_PATH" --clobber
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: "Download Germany, Austria, and Schwiez"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/europe/dach-latest.osm.pbf
+
+      - name: Filter DACH for Pfaedle
+        run: osmium tags-filter -o pfaedle-filtered-dach-latest.osm.pbf --expressions=pfaedle-filter-all.txt dach-latest.osm.pbf
+  
+      - name: "Upload DACH filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-dach-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-dach-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
