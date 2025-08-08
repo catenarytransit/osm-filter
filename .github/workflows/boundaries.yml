@@ -1,0 +1,40 @@
+name: Query Overpass for Boundaries
+
+on:
+  workflow_call:
+
+jobs:
+  upload-release-asset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install OSM tools
+        run: sudo apt install osmium-tool osmctools
+
+      - name: Install rust
+        run: rustup toolchain install stable
+
+      - name: Download
+        run: curl -X POST -d @query.ql "https://overpass-api.de/api/interpreter" -o administrative_boundaries.osm
+
+      - name: Convert to PBF
+        run: osmconvert administrative_boundaries.osm -o=administrative_boundaries.pbf
+
+      - name: Upload filtered files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: administrative_boundaries.pbf
+          ASSET_NAME: administrative_boundaries.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
