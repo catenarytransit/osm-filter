@@ -9,4 +9,4 @@ permissions:
 
 jobs:
   call-update:
-    uses: ./.github/workflows/administrative_boundaries.pbf
+    uses: ./.github/workflows/boundaries.yml
