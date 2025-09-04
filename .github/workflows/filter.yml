@@ -39,7 +39,6 @@ jobs:
       - name: Delete old deutschland file
         run: |
           rm germany-latest.osm.pbf
-          rm pfaedle-filtered-germany-latest.osm.pbf
         
      # - name: Filter deutschland road names out
      #   run: |
@@ -85,7 +84,7 @@ jobs:
 
       - name: Delete old sweden file
         run: |
-          rm sweden-latest.osm.pbf
+          rm sweden-latest.osm.pbf          
           rm pfaedle-filtered-sweden-latest.osm.pbf
 
       - name: Download OSM file France
