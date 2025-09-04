@@ -37,7 +37,9 @@ jobs:
         run: osmium tags-filter -o pfaedle-filtered-germany-latest.osm.pbf --expressions=pfaedle-filter-all.txt germany-latest.osm.pbf
 
       - name: Delete old deutschland file
-        run: rm germany-latest.osm.pbf
+        run: |
+          rm germany-latest.osm.pbf
+          rm pfaedle-filtered-germany-latest.osm.pbf
         
      # - name: Filter deutschland road names out
      #   run: |
@@ -82,8 +84,36 @@ jobs:
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
 
       - name: Delete old sweden file
-        run: rm sweden-latest.osm.pbf
+        run: |
+          rm sweden-latest.osm.pbf
+          rm pfaedle-filtered-sweden-latest.osm.pbf
 
+      - name: Download OSM file France
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/europe/france-latest.osm.pbf
+
+      - name: Filter France
+        run:  osmium tags-filter -o pfaedle-filtered-france-latest.osm.pbf --expressions=pfaedle-filter-all.txt france-latest.osm.pbf
+
+      - name: Upload filtered file France
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-france-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-france-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: Delete old France file
+        run: |
+          rm france-latest.osm.pbf
+          rm pfaedle-filtered-france-latest.osm.pbf
+          
       - name: download file for British Isles
         uses: wei/wget@v1
         with:
