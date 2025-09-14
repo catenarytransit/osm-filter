@@ -196,24 +196,3 @@ jobs:
           gh release upload latest "$ASSET_PATH" --clobber
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
-
-      - name: "Download Norway"
-        uses: wei/wget@v1
-        with:
-          args: https://download.geofabrik.de/europe/norway-latest.osm.pbf
-
-      - name: Filter norway for Pfaedle
-        run: osmium tags-filter -o pfaedle-filtered-norway-latest.osm.pbf --expressions=pfaedle-filter-all.txt norway-latest.osm.pbf
-  
-      - name: "Upload norway filtered"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
-          GH_TOKEN: ${{ github.token }}
-          ASSET_PATH: pfaedle-filtered-norway-latest.osm.pbf
-          ASSET_NAME: pfaedle-filtered-norway-latest.osm.pbf
-          RELEASE_TAG: latest
-        run: |
-          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
-          gh release upload latest "$ASSET_PATH" --clobber
-        shell: bash
-        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''

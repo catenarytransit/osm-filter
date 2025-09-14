@@ -10,3 +10,5 @@ permissions:
 jobs:
   call-update:
     uses: ./.github/workflows/filter.yml
+  call-update-norway:
+    uses: ./.github/workflows/filter_norway.yml
