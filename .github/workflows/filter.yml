@@ -196,3 +196,28 @@ jobs:
           gh release upload latest "$ASSET_PATH" --clobber
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: "Delete old pbf files"
+        run: |
+          rm -rf *.pbf
+
+      - name: "Download California"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/north-america/us/california-latest.osm.pbf
+
+      - name: Filter California for Pfaedle
+        run: osmium tags-filter -o pfaedle-filtered-california-latest.osm.pbf --expressions=pfaedle-filter-all.txt california-latest.osm.pbf
+  
+      - name: "Upload DACH filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-california-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-california-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
