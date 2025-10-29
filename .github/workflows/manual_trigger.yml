@@ -12,3 +12,5 @@ jobs:
     uses: ./.github/workflows/filter.yml
   call-update-norway:
     uses: ./.github/workflows/filter_norway.yml
+  call-update-canada:
+    uses: ./.github/workflows/filter_canada.yml
