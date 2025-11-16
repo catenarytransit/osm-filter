@@ -1,0 +1,50 @@
+name: Filter Indian files
+
+on:
+  workflow_call:
+
+jobs:
+  upload-release-asset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install OSM tools
+        run: sudo apt install osmium-tool osmctools
+
+      - name: Install rust
+        run: rustup toolchain install stable
+
+      - name: compile
+        run: cargo build --release
+
+      - name: download filter for all
+        uses: wei/wget@v1
+        with:
+          args: https://raw.githubusercontent.com/catenarytransit/pfaedled-gtfs-actions/refs/heads/main/pfaedle-filter-all.txt
+        
+      - name: "Download India"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/asia/india-latest.osm.pbf
+
+      - name: Filter India for Pfaedle
+        run: osmium tags-filter -o pfaedle-filtered-india-latest.osm.pbf --expressions=pfaedle-filter-all.txt india-latest.osm.pbf
+  
+      - name: "Upload India filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-india-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-india-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
