@@ -27,6 +27,9 @@ jobs:
         uses: wei/wget@v1
         with:
           args: https://raw.githubusercontent.com/catenarytransit/pfaedled-gtfs-actions/refs/heads/main/pfaedle-filter-all.txt
+
+      - name: Download rail only filter
+        run: wget https://raw.githubusercontent.com/catenarytransit/pfaedled-gtfs-actions/refs/heads/main/railway-filter.txt -O railway-filter.txt
         
       - name: "Download India"
         uses: wei/wget@v1
@@ -35,6 +38,9 @@ jobs:
 
       - name: Filter India for Pfaedle
         run: osmium tags-filter -o pfaedle-filtered-india-latest.osm.pbf --expressions=pfaedle-filter-all.txt india-latest.osm.pbf
+
+      - name: Filter rail only
+        run: osmium tags-filter -o pfaedle-filtered-india-latest-rail-only.osm.pbf --expressions=railway-filter.txt pfaedle-filtered-india-latest.osm.pbf
   
       - name: "Upload India filtered"
         env:
@@ -42,6 +48,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ASSET_PATH: pfaedle-filtered-india-latest.osm.pbf
           ASSET_NAME: pfaedle-filtered-india-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      
+      - name: "Upload India filtered rail only"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-india-latest-rail-only.osm.pbf
+          ASSET_NAME: pfaedle-filtered-india-latest-rail-only.osm.pbf
           RELEASE_TAG: latest
         run: |
           echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"

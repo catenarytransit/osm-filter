@@ -1,0 +1,50 @@
+name: Filter Northeast of USA files
+
+on:
+  workflow_call:
+
+jobs:
+  upload-release-asset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install OSM tools
+        run: sudo apt install osmium-tool osmctools
+
+      - name: Install rust
+        run: rustup toolchain install stable
+
+      - name: compile
+        run: cargo build --release
+
+      - name: download filter for all
+        uses: wei/wget@v1
+        with:
+          args: https://raw.githubusercontent.com/catenarytransit/pfaedled-gtfs-actions/refs/heads/main/pfaedle-filter-all.txt
+        
+      - name: "Download Northeast"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/north-america/us-northeast-latest.osm.pbf
+
+      - name: Filter Northeast for Pfaedle
+        run: osmium tags-filter -o pfaedle-filtered-us-northeast-latest.osm.pbf --expressions=pfaedle-filter-all.txt us-northeast-latest.osm.pbf
+  
+      - name: "Upload Northeast filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-us-northeast-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-us-northeast-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
