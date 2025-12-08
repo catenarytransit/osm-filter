@@ -23,6 +23,9 @@ jobs:
       - name: compile
         run: cargo build --release
 
+      - name: Download rail only filter
+        run: wget https://raw.githubusercontent.com/catenarytransit/pfaedled-gtfs-actions/refs/heads/main/railway-filter.txt -O railway-filter.txt
+        
       - name: "Download Japan"
         uses: wei/wget@v1
         with:
