@@ -20,3 +20,5 @@ jobs:
     uses: ./.github/workflows/filter_estonia.yml
   call-update-usa-northeast:
     uses: ./.github/workflows/usa_northeast_filter.yaml
+  call-update-japan:
+    uses: ./.github/workflows/filter_japan.yml
