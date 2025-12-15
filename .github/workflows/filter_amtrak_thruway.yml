@@ -1,0 +1,39 @@
+name: Filter Amtrak Thruway
+
+on:
+  workflow_call:
+
+jobs:
+  upload-release-asset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install OSM tools
+        run: sudo apt install osmium-tool osmctools
+
+      - name: "Download North America"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/north-america-latest.osm.pbf
+
+      - name: Filter North America for Amtrak Thruway
+        run: osmium tags-filter -o amtrak-thruway.osm.pbf --expressions=amtrakthruwayfilter.txt north-america-latest.osm.pbf
+
+      - name: "Upload Amtrak Thruway"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: amtrak-thruway.osm.pbf
+          ASSET_NAME: amtrak-thruway.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
