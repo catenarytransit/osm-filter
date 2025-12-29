@@ -9,3 +9,4 @@ nwr/route=light_rail
 nwr/route=subway
 nwr/route=narrow_gague
 nwr/public_transport=stop_area,rel_flat
+nwr/route=railway
