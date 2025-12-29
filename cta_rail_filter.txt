@@ -1,0 +1,2 @@
+nwr/route=subway
+nwr/railway=subway

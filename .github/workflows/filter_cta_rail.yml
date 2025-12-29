@@ -1,0 +1,45 @@
+name: Filter CTA Rail
+
+on:
+  workflow_call:
+
+jobs:
+  upload-release-asset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install OSM tools
+        run: sudo apt install osmium-tool osmctools
+
+      - name: Install rust
+        run: rustup toolchain install stable
+
+      - name: compile
+        run: cargo build --release
+
+      - name: "Download Illinois"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/north-america/us/illinois-latest.osm.pbf
+
+      - name: Filter Illinois for CTA Rail
+        run: osmium tags-filter -o cta-rail-filtered-illinois-latest.osm.pbf --expressions=cta_rail_filter.txt illinois-latest.osm.pbf
+  
+      - name: "Upload Illinois filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: cta-rail-filtered-illinois-latest.osm.pbf
+          ASSET_NAME: cta-rail-filtered-illinois-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
