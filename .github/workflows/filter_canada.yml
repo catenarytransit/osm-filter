@@ -23,11 +23,7 @@ jobs:
       - name: compile
         run: cargo build --release
 
-      - name: download filter for all
-        uses: wei/wget@v1
-        with:
-          args: https://raw.githubusercontent.com/catenarytransit/pfaedled-gtfs-actions/refs/heads/main/pfaedle-filter-all.txt
-        
+
       - name: "Download Ontario"
         uses: wei/wget@v1
         with:
