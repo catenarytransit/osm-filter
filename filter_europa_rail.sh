@@ -2,6 +2,6 @@
 
 #wget https://download.geofabrik.de/europe-latest.osm.pbf -O europe-latest.osm.pbf
 
- osmium tags-filter -o railonly-europe-latest.osm.pbf --expressions=railway-filter.txt europe-latest.osm.pbf
+ osmium tags-filter -o railonly-europe-latest.osm.pbf --expressions=railway-filter.txt europe-latest.osm.pbf --overwrite
 
  gh release upload latest railonly-europe-latest.osm.pbf --clobber -R https://github.com/catenarytransit/osm-filter/
