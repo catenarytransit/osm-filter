@@ -3,3 +3,5 @@ nnw/public_transport=stop_position
 nwr/public_transport=platform
 nwr/public_transport=stop_area
 nwr/public_transport=station
+nwr/railway=halt
+nwr/railway=tram_stop
