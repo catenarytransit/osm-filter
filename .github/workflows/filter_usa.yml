@@ -14,25 +14,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: APT Update
+        run: sudo apt update
+
       - name: Install OSM tools
         run: sudo apt install osmium-tool osmctools
 
       - name: Install rust
         run: rustup toolchain install stable
 
-      - name: compile
-        run: cargo build --release
-
-
-      - name: "Download Ontario"
+      - name: "Download USA"
         uses: wei/wget@v1
         with:
           args: https://download.geofabrik.de/north-america/us.osm.pbf
 
-      - name: Filter Ontario for Pfaedle
+      - name: Filter USA for Pfaedle
         run: osmium tags-filter -o pfaedle-filtered-us-latest.osm.pbf --expressions=pfaedle-filter-all.txt us.osm.pbf
   
-      - name: "Upload Ontario filtered"
+      - name: "Upload USA filtered"
         env:
           GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
           GH_TOKEN: ${{ github.token }}
