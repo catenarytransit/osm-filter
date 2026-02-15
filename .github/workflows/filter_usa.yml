@@ -26,10 +26,10 @@ jobs:
       - name: "Download USA"
         uses: wei/wget@v1
         with:
-          args: https://download.geofabrik.de/north-america/us.osm.pbf
+          args: https://download.geofabrik.de/north-america/us-latest.osm.pbf
 
       - name: Filter USA for Pfaedle
-        run: osmium tags-filter -o pfaedle-filtered-us-latest.osm.pbf --expressions=pfaedle-filter-all.txt us.osm.pbf
+        run: osmium tags-filter -o pfaedle-filtered-us-latest.osm.pbf --expressions=pfaedle-filter-all.txt us-latest.osm.pbf
   
       - name: "Upload USA filtered"
         env:
