@@ -40,3 +40,19 @@ jobs:
           gh release upload latest "$ASSET_PATH" --clobber
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
+
+      - name: Filter South Korea pfaedle general
+        run: osmium tags-filter -o pfaedle-filtered-korea-latest.osm.pbf --expressions=pfaedle-filter-all.txt south-korea-latest.osm.pbf
+  
+      - name: "Upload South Korea pfaedle filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-korea-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-korea-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
