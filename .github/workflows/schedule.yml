@@ -11,6 +11,8 @@ permissions:
 jobs:
   call-update:
     uses: ./.github/workflows/filter.yml
+  call-update-usa:
+    uses: ./.github/workflows/filter_usa.yml
   call-update-norway:
     uses: ./.github/workflows/filter_norway.yml
   call-update-india:
