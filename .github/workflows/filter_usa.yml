@@ -31,15 +31,24 @@ jobs:
       - name: Filter USA for Pfaedle
         run: osmium tags-filter -o pfaedle-filtered-us-latest.osm.pbf --expressions=pfaedle-filter-all.txt us-latest.osm.pbf
   
-      - name: "Upload USA filtered"
+      - name: "Split and Upload USA filtered chunks"
         env:
           GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
           GH_TOKEN: ${{ github.token }}
-          ASSET_PATH: pfaedle-filtered-us-latest.osm.pbf
-          ASSET_NAME: pfaedle-filtered-us-latest.osm.pbf
           RELEASE_TAG: latest
         run: |
-          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
-          gh release upload latest "$ASSET_PATH" --clobber
+          echo "Splitting file..."
+          split -b 1G --numeric-suffixes pfaedle-filtered-us-latest.osm.pbf pfaedle-filtered-us-latest-chunk-
+          
+          count=$(ls pfaedle-filtered-us-latest-chunk-* | wc -l)
+          echo "Created $count chunks."
+          echo "$count" > pfaedle-filtered-us-latest-chunk-count.txt
+          
+          echo "Uploading chunk count file..."
+          gh release upload latest pfaedle-filtered-us-latest-chunk-count.txt --clobber
+
+          for file in pfaedle-filtered-us-latest-chunk-*; do
+            echo "Uploading chunk: $file"
+            gh release upload latest "$file" --clobber
+          done
         shell: bash
-        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
