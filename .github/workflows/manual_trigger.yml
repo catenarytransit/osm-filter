@@ -26,8 +26,6 @@ jobs:
     uses: ./.github/workflows/filter_japan.yml
   call-update-korea:
     uses: ./.github/workflows/filter_korea.yml
-  call-update-amtrak-thruway:
-    uses: ./.github/workflows/filter_amtrak_thruway.yml
   call-update-cta-rail:
     uses: ./.github/workflows/filter_cta_rail.yml
   call-update-ukraine:

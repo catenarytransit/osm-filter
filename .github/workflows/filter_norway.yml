@@ -14,11 +14,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install OSM tools
-        run: sudo apt install osmium-tool osmctools
+  
 
       - name: APT Update
-        run: sudo apt update
+        run: sudo apt update  
+
+      - name: Install OSM tools
+        run: sudo apt install osmium-tool osmctools
 
       - name: Install rust
         run: rustup toolchain install stable
