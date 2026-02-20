@@ -1,4 +1,4 @@
-name: Filter Norway files
+name: Filter Ukraine files
 
 on:
   workflow_call:
@@ -20,23 +20,20 @@ jobs:
       - name: APT Update
         run: sudo apt update
 
-      - name: Install rust
-        run: rustup toolchain install stable
-
-      - name: "Download Norway"
+      - name: "Download Ukraine"
         uses: wei/wget@v1
         with:
-          args: https://download.geofabrik.de/europe/norway-latest.osm.pbf
+          args: https://download.geofabrik.de/europe/ukraine-latest.osm.pbf
 
-      - name: Filter norway for Pfaedle
-        run: osmium tags-filter -o pfaedle-filtered-norway-latest.osm.pbf --expressions=pfaedle-filter-all.txt norway-latest.osm.pbf
+      - name: Filter ukraine for Pfaedle
+        run: osmium tags-filter -o pfaedle-filtered-ukraine-latest.osm.pbf --expressions=pfaedle-filter-all.txt ukraine-latest.osm.pbf
   
-      - name: "Upload norway filtered"
+      - name: "Upload ukraine filtered"
         env:
           GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
           GH_TOKEN: ${{ github.token }}
-          ASSET_PATH: pfaedle-filtered-norway-latest.osm.pbf
-          ASSET_NAME: pfaedle-filtered-norway-latest.osm.pbf
+          ASSET_PATH: pfaedle-filtered-ukraine-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-ukraine-latest.osm.pbf
           RELEASE_TAG: latest
         run: |
           echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"

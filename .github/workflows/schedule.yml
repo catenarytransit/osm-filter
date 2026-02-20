@@ -29,4 +29,5 @@ jobs:
     uses: ./.github/workflows/filter_amtrak_thruway.yml
   call-update-cta-rail:
     uses: ./.github/workflows/filter_cta_rail.yml
-    
+  call-update-ukraine:
+    uses: ./.github/workflows/filter_ukraine.yml
