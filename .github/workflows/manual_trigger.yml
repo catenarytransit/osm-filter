@@ -30,3 +30,5 @@ jobs:
     uses: ./.github/workflows/filter_cta_rail.yml
   call-update-ukraine:
     uses: ./.github/workflows/filter_ukraine.yml
+  call-update-oceania:
+    uses: ./.github/workflows/filter_oceania.yml

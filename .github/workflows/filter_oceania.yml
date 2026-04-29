@@ -1,4 +1,4 @@
-name: Filter Japanese files
+name: Filter australia-oceaniaese files
 
 on:
   workflow_call:
@@ -23,23 +23,23 @@ jobs:
       - name: Install rust
         run: rustup toolchain install stable
 
-      - name: "Download Japan"
+      - name: "Download Oceania"
         uses: wei/wget@v1
         with:
-          args: https://download.geofabrik.de/asia/japan-latest.osm.pbf
+          args: https://download.geofabrik.de/australia-oceania-latest.osm.pbf
 
-      - name: Filter Japan for railways
-        run: osmium tags-filter -o railway-filtered-japan-latest.osm.pbf --expressions=railway-filter.txt japan-latest.osm.pbf
+      - name: Filter australia-oceania for railways
+        run: osmium tags-filter -o railway-filtered-australia-oceania-latest.osm.pbf --expressions=railway-filter.txt australia-oceania-latest.osm.pbf
 
-      - name: Filter Japan for railway stations
-        run: osmium tags-filter -o railstations-japan-latest.osm.pbf --expressions=railway-station-filter.txt japan-latest.osm.pbf
+      - name: Filter australia-oceania for railway stations
+        run: osmium tags-filter -o railstations-australia-oceania-latest.osm.pbf --expressions=railway-station-filter.txt australia-oceania-latest.osm.pbf
 
-      - name: "Upload Japan filtered"
+      - name: "Upload australia-oceania filtered"
         env:
           GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
           GH_TOKEN: ${{ github.token }}
-          ASSET_PATH: railway-filtered-japan-latest.osm.pbf
-          ASSET_NAME: railway-filtered-japan-latest.osm.pbf
+          ASSET_PATH: railway-filtered-australia-oceania-latest.osm.pbf
+          ASSET_NAME: railway-filtered-australia-oceania-latest.osm.pbf
           RELEASE_TAG: latest
         run: |
           echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
@@ -47,12 +47,12 @@ jobs:
         shell: bash
         if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
 
-      - name: "Upload Japan stations filtered"
+      - name: "Upload australia-oceania stations filtered"
         env:
           GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
           GH_TOKEN: ${{ github.token }}
-          ASSET_PATH: railstations-japan-latest.osm.pbf
-          ASSET_NAME: railstations-japan-latest.osm.pbf
+          ASSET_PATH: railstations-australia-oceania-latest.osm.pbf
+          ASSET_NAME: railstations-australia-oceania-latest.osm.pbf
           RELEASE_TAG: latest
         run: |
           echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
