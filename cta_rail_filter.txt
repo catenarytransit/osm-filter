@@ -1,2 +1,4 @@
 nwr/route=subway
 nwr/railway=subway
+nwr/network=CTA
+nwr/route=subway
