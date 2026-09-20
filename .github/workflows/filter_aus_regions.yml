@@ -23,7 +23,7 @@ jobs:
       - name: Install rust
         run: rustup toolchain install stable
 
-      - name: "Download Ontario"
+      - name: "Download WA"
         uses: wei/wget@v1
         with:
           args: https://download.geofabrik.de/australia-oceania/australia/western-australia-latest.osm.pbf
