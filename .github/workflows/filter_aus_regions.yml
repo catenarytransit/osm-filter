@@ -1,0 +1,45 @@
+name: Filter Canadian files
+
+on:
+  workflow_call:
+
+jobs:
+  upload-release-asset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: APT Update
+        run: sudo apt update
+
+      - name: Install OSM tools
+        run: sudo apt install osmium-tool osmctools
+
+      - name: Install rust
+        run: rustup toolchain install stable
+
+      - name: "Download Ontario"
+        uses: wei/wget@v1
+        with:
+          args: https://download.geofabrik.de/australia-oceania/australia/western-australia-latest.osm.pbf
+
+      - name: Filter WA for Pfaedle
+        run: osmium tags-filter -o pfaedle-filtered-western-australia-latest.osm.pbf --expressions=pfaedle-filter-all.txt western-australia-latest.osm.pbf
+  
+      - name: "Upload WA filtered"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITUHB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          ASSET_PATH: pfaedle-filtered-western-australia-latest.osm.pbf
+          ASSET_NAME: pfaedle-filtered-western-australia-latest.osm.pbf
+          RELEASE_TAG: latest
+        run: |
+          echo "Uploading asset: $ASSET_PATH as $ASSET_NAME to release latest"
+          gh release upload latest "$ASSET_PATH" --clobber
+        shell: bash
+        if: env.ASSET_PATH != '' && env.ASSET_NAME != ''
