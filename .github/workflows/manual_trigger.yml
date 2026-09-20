@@ -34,3 +34,5 @@ jobs:
     uses: ./.github/workflows/filter_oceania.yml
   call-update-spain:
     uses: ./.github/workflows/filter_spain.yml
+  call-update-aus-regions:
+    uses: ./.github/workflows/filter_aus_regions.yml
