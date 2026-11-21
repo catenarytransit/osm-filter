@@ -1,0 +1,53 @@
+name: Filter China railways for Pfaedle
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every Sunday at 04:30 UTC; refreshes the Geofabrik extract weekly.
+    - cron: '30 4 * * 0'
+  workflow_call:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: china-rail-pfaedle
+  cancel-in-progress: false
+
+jobs:
+  filter-china-rail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout filter definitions
+        uses: actions/checkout@v4
+
+      - name: Install osmium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y osmium-tool
+
+      - name: Download China extract
+        run: |
+          curl --fail --location --retry 5 --retry-delay 15 \
+            --output china-latest.osm.pbf \
+            https://download.geofabrik.de/asia/china-latest.osm.pbf
+          test -s china-latest.osm.pbf
+          osmium fileinfo china-latest.osm.pbf
+
+      - name: Filter railway network and transit stops for Pfaedle
+        run: |
+          osmium tags-filter \
+            --expressions=railway-filter.txt \
+            --output=pfaedle-filtered-china-latest-rail-only.osm.pbf \
+            china-latest.osm.pbf
+          test -s pfaedle-filtered-china-latest-rail-only.osm.pbf
+          osmium fileinfo pfaedle-filtered-china-latest-rail-only.osm.pbf
+          osmium check-refs pfaedle-filtered-china-latest-rail-only.osm.pbf
+
+      - name: Upload filtered China PBF to latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view latest >/dev/null || gh release create latest --title "Latest filtered OSM extracts" --notes "Automatically refreshed filtered OSM extracts."
+          gh release upload latest pfaedle-filtered-china-latest-rail-only.osm.pbf --clobber
